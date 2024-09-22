@@ -4,7 +4,7 @@ import entities.Veiculo;
 
 import java.util.List;
 
-public interface ServicoVendas {
+public interface IServicoVendas {
     void registrarVenda(Veiculo veiculo);
     List<Veiculo> listarVeiculos();
 }

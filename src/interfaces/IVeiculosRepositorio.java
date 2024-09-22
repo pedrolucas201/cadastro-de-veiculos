@@ -4,7 +4,7 @@ import entities.Veiculo;
 
 import java.util.List;
 
-public interface RepositorioVeiculos {
+public interface IVeiculosRepositorio {
     void adicionarVeiculo(Veiculo veiculo);
     List<Veiculo> listarVeiculos();
 }

@@ -1,6 +1,6 @@
 package entities;
 
-public abstract class Veiculo {
+public class Veiculo {
     private String modelo;
     private Proprietario proprietario;
 
@@ -9,7 +9,6 @@ public abstract class Veiculo {
         this.proprietario = proprietario;
     }
 
-    // Getters e Setters
     public String getModelo() {
         return modelo;
     }
@@ -22,7 +21,11 @@ public abstract class Veiculo {
         return proprietario;
     }
 
-    public abstract String getTipo();
+    public void setProprietario(Proprietario proprietario) {
+        this.proprietario = proprietario;
+    }
 
-    public abstract void setTipo(String tipo);
+    public String getTipo() {
+        return "Veículo";
+    }
 }

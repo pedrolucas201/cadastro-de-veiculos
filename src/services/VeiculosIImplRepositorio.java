@@ -1,12 +1,12 @@
 package services;
 
 import entities.Veiculo;
-import interfaces.RepositorioVeiculos;
+import interfaces.IVeiculosRepositorio;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VeiculosRepositorioImpl implements RepositorioVeiculos {
+public class VeiculosIImplRepositorio implements IVeiculosRepositorio {
     private List<Veiculo> veiculos = new ArrayList<>();
 
     @Override

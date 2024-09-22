@@ -1,17 +1,23 @@
 package entities;
 
 public class Caminhao extends Veiculo {
-    public Caminhao(String modelo, Proprietario proprietario) {
+    private int numEixos;
+
+    public Caminhao(String modelo, Proprietario proprietario, int numEixos) {
         super(modelo, proprietario);
+        this.numEixos = numEixos;
+    }
+
+    public int getNumEixos() {
+        return numEixos;
+    }
+
+    public void setNumEixos(int numEixos) {
+        this.numEixos = numEixos;
     }
 
     @Override
     public String getTipo() {
         return "Caminhão";
-    }
-
-    @Override
-    public void setTipo(String tipo) {
-        // Implementação opcional, se necessário
     }
 }

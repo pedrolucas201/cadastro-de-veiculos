@@ -1,15 +1,15 @@
 package services;
 
 import entities.Veiculo;
-import interfaces.ServicoVendas;
-import interfaces.RepositorioVeiculos;
+import interfaces.IServicoVendas;
+import interfaces.IVeiculosRepositorio;
 
 import java.util.List;
 
-public class VendasService implements ServicoVendas {
-    private RepositorioVeiculos repositorio;
+public class VendasService implements IServicoVendas {
+    private IVeiculosRepositorio repositorio;
 
-    public VendasService(RepositorioVeiculos repositorio) {
+    public VendasService(IVeiculosRepositorio repositorio) {
         this.repositorio = repositorio;
     }
 

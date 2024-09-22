@@ -1,7 +1,7 @@
 package gui;
 
 import entities.*;
-import services.VeiculosRepositorioImpl;
+import services.VeiculosIImplRepositorio;
 import services.VendasService;
 
 import javax.swing.*;
@@ -12,29 +12,28 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class VeiculoMonitorGUI extends JFrame {
-    private VeiculosRepositorioImpl repositorio;
+    private VeiculosIImplRepositorio repositorio;
     private VendasService vendasService;
 
-    private JTextField modeloField;
-    private JTextField nomeProprietarioField;
-    private JTextField documentoProprietarioField;
-    private JComboBox<String> tipoVeiculoComboBox;
+    private JTextField modeloField, assentosField, potenciaMotorField, numEixosField;
+    private JTextField nomeProprietarioField, documentoProprietarioField, enderecoProprietarioField, telefoneProprietarioField;
+    private JComboBox<String> tipoVeiculoComboBox, tipoMotoComboBox;
     private JTable veiculosTable;
     private DefaultTableModel tableModel;
     private int selectedRow = -1;
 
     public VeiculoMonitorGUI() {
-        repositorio = new VeiculosRepositorioImpl();
+        repositorio = new VeiculosIImplRepositorio();
         vendasService = new VendasService(repositorio);
 
         setTitle("Cadastro de Veículos");
-        setSize(800, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Painel de Entrada de Dados
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(5, 2));
+        inputPanel.setLayout(new GridLayout(9, 2));
 
         inputPanel.add(new JLabel("Modelo:"));
         modeloField = new JTextField();
@@ -48,9 +47,35 @@ public class VeiculoMonitorGUI extends JFrame {
         documentoProprietarioField = new JTextField();
         inputPanel.add(documentoProprietarioField);
 
+        inputPanel.add(new JLabel("Proprietário (Endereço):"));
+        enderecoProprietarioField = new JTextField();
+        inputPanel.add(enderecoProprietarioField);
+
+        inputPanel.add(new JLabel("Proprietário (Telefone):"));
+        telefoneProprietarioField = new JTextField();
+        inputPanel.add(telefoneProprietarioField);
+
         inputPanel.add(new JLabel("Tipo de Veículo:"));
         tipoVeiculoComboBox = new JComboBox<>(new String[]{"Carro", "Moto", "Caminhão"});
+        tipoVeiculoComboBox.addActionListener(e -> atualizarCamposVeiculo());
         inputPanel.add(tipoVeiculoComboBox);
+
+        // Campos dinâmicos de acordo com o tipo de veículo
+        inputPanel.add(new JLabel("Número de Assentos (Carro):"));
+        assentosField = new JTextField();
+        inputPanel.add(assentosField);
+
+        inputPanel.add(new JLabel("Potência do Motor (Carro):"));
+        potenciaMotorField = new JTextField();
+        inputPanel.add(potenciaMotorField);
+
+        inputPanel.add(new JLabel("Tipo de Moto:"));
+        tipoMotoComboBox = new JComboBox<>(new String[]{"NAKED", "TRAIL", "BIGTRAIL", "OFFROAD"});
+        inputPanel.add(tipoMotoComboBox);
+
+        inputPanel.add(new JLabel("Número de Eixos (Caminhão):"));
+        numEixosField = new JTextField();
+        inputPanel.add(numEixosField);
 
         // Botões de ação
         JButton adicionarButton = new JButton("Adicionar Veículo");
@@ -99,23 +124,30 @@ public class VeiculoMonitorGUI extends JFrame {
         add(scrollPane, BorderLayout.SOUTH);
 
         setVisible(true);
+        atualizarCamposVeiculo(); // Atualizar os campos inicialmente
     }
 
     private void adicionarVeiculo() {
         String modelo = modeloField.getText();
         String nomeProprietario = nomeProprietarioField.getText();
         String documentoProprietario = documentoProprietarioField.getText();
+        String endereco = enderecoProprietarioField.getText();
+        String telefone = telefoneProprietarioField.getText();
         String tipoVeiculo = (String) tipoVeiculoComboBox.getSelectedItem();
 
-        Proprietario proprietario = new Proprietario(nomeProprietario, documentoProprietario);
+        Proprietario proprietario = new Proprietario(nomeProprietario, documentoProprietario, endereco, telefone);
         Veiculo veiculo;
 
         if (tipoVeiculo.equals("Carro")) {
-            veiculo = new Carro(modelo, proprietario);
+            int assentos = Integer.parseInt(assentosField.getText());
+            double potenciaMotor = Double.parseDouble(potenciaMotorField.getText());
+            veiculo = new Carro(modelo, proprietario, assentos, potenciaMotor);
         } else if (tipoVeiculo.equals("Moto")) {
-            veiculo = new Moto(modelo, proprietario);
+            Moto.TipoMoto tipoMoto = Moto.TipoMoto.valueOf((String) tipoMotoComboBox.getSelectedItem());
+            veiculo = new Moto(modelo, proprietario, tipoMoto);
         } else {
-            veiculo = new Caminhao(modelo, proprietario);
+            int numEixos = Integer.parseInt(numEixosField.getText());
+            veiculo = new Caminhao(modelo, proprietario, numEixos);
         }
 
         vendasService.registrarVenda(veiculo);
@@ -129,6 +161,8 @@ public class VeiculoMonitorGUI extends JFrame {
             String modelo = modeloField.getText();
             String nomeProprietario = nomeProprietarioField.getText();
             String documentoProprietario = documentoProprietarioField.getText();
+            String endereco = enderecoProprietarioField.getText();
+            String telefone = telefoneProprietarioField.getText();
             String tipoVeiculo = (String) tipoVeiculoComboBox.getSelectedItem();
 
             List<Veiculo> veiculos = vendasService.listarVeiculos();
@@ -136,6 +170,17 @@ public class VeiculoMonitorGUI extends JFrame {
             veiculo.setModelo(modelo);
             veiculo.getProprietario().setNome(nomeProprietario);
             veiculo.getProprietario().setDocumento(documentoProprietario);
+            veiculo.getProprietario().setEndereco(endereco);
+            veiculo.getProprietario().setTelefone(telefone);
+
+            if (tipoVeiculo.equals("Carro")) {
+                ((Carro) veiculo).setAssentos(Integer.parseInt(assentosField.getText()));
+                ((Carro) veiculo).setPotenciaMotor(Double.parseDouble(potenciaMotorField.getText()));
+            } else if (tipoVeiculo.equals("Moto")) {
+                ((Moto) veiculo).setTipoMoto(Moto.TipoMoto.valueOf((String) tipoMotoComboBox.getSelectedItem()));
+            } else {
+                ((Caminhao) veiculo).setNumEixos(Integer.parseInt(numEixosField.getText()));
+            }
 
             JOptionPane.showMessageDialog(this, "Veículo atualizado com sucesso!");
             limparCampos();
@@ -177,15 +222,42 @@ public class VeiculoMonitorGUI extends JFrame {
         modeloField.setText(veiculo.getModelo());
         nomeProprietarioField.setText(veiculo.getProprietario().getNome());
         documentoProprietarioField.setText(veiculo.getProprietario().getDocumento());
-        tipoVeiculoComboBox.setSelectedItem(veiculo.getTipo());
+        enderecoProprietarioField.setText(veiculo.getProprietario().getEndereco());
+        telefoneProprietarioField.setText(veiculo.getProprietario().getTelefone());
+
+        if (veiculo instanceof Carro) {
+            tipoVeiculoComboBox.setSelectedItem("Carro");
+            assentosField.setText(String.valueOf(((Carro) veiculo).getAssentos()));
+            potenciaMotorField.setText(String.valueOf(((Carro) veiculo).getPotenciaMotor()));
+        } else if (veiculo instanceof Moto) {
+            tipoVeiculoComboBox.setSelectedItem("Moto");
+            tipoMotoComboBox.setSelectedItem(((Moto) veiculo).getTipoMoto().name());
+        } else if (veiculo instanceof Caminhao) {
+            tipoVeiculoComboBox.setSelectedItem("Caminhão");
+            numEixosField.setText(String.valueOf(((Caminhao) veiculo).getNumEixos()));
+        }
     }
 
     private void limparCampos() {
         modeloField.setText("");
         nomeProprietarioField.setText("");
         documentoProprietarioField.setText("");
+        enderecoProprietarioField.setText("");
+        telefoneProprietarioField.setText("");
+        assentosField.setText("");
+        potenciaMotorField.setText("");
+        numEixosField.setText("");
+        tipoMotoComboBox.setSelectedIndex(0);
         tipoVeiculoComboBox.setSelectedIndex(0);
         selectedRow = -1;
+    }
+
+    private void atualizarCamposVeiculo() {
+        String tipoVeiculo = (String) tipoVeiculoComboBox.getSelectedItem();
+        assentosField.setEnabled("Carro".equals(tipoVeiculo));
+        potenciaMotorField.setEnabled("Carro".equals(tipoVeiculo));
+        tipoMotoComboBox.setEnabled("Moto".equals(tipoVeiculo));
+        numEixosField.setEnabled("Caminhão".equals(tipoVeiculo));
     }
 
     public static void main(String[] args) {
