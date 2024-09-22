@@ -87,10 +87,14 @@ public class VeiculoMonitorGUI extends JFrame {
         JButton deletarButton = new JButton("Deletar Veículo");
         deletarButton.addActionListener(e -> deletarVeiculo());
 
+        JButton visualizarUltimoButton = new JButton("Visualizar Último Veículo");
+        visualizarUltimoButton.addActionListener(e -> visualizarUltimoVeiculo());
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(adicionarButton);
         buttonPanel.add(atualizarButton);
         buttonPanel.add(deletarButton);
+        buttonPanel.add(visualizarUltimoButton);
 
         // Tabela para listar veículos
         String[] colunas = {"Modelo", "Proprietário", "Documento", "Tipo"};
@@ -177,7 +181,8 @@ public class VeiculoMonitorGUI extends JFrame {
     private void deletarVeiculo() {
         if (selectedRow != -1) {
             List<Veiculo> veiculos = vendasService.listarVeiculos();
-            veiculos.remove(selectedRow);
+            veiculos.remove(selectedRow); // Remover da lista
+            repositorio.desempilharVeiculo(); // Remover da pilha
             JOptionPane.showMessageDialog(this, "Veículo deletado com sucesso!");
             limparCampos();
             listarVeiculos();
@@ -199,6 +204,15 @@ public class VeiculoMonitorGUI extends JFrame {
         }
     }
 
+    private void visualizarUltimoVeiculo() {
+        try {
+            Veiculo ultimoVeiculo = repositorio.visualizarUltimoVeiculo();
+            JOptionPane.showMessageDialog(this, "Último veículo adicionado: " + ultimoVeiculo.getModelo());
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void preencherCamposParaEdicao(int rowIndex) {
         selectedRow = rowIndex;
 
@@ -215,12 +229,20 @@ public class VeiculoMonitorGUI extends JFrame {
             tipoVeiculoComboBox.setSelectedItem("Carro");
             assentosField.setText(String.valueOf(((Carro) veiculo).getAssentos()));
             potenciaMotorField.setText(String.valueOf(((Carro) veiculo).getPotenciaMotor()));
+            numEixosField.setText("");
+            tipoMotoComboBox.setSelectedItem("NAKED");
         } else if (veiculo instanceof Moto) {
             tipoVeiculoComboBox.setSelectedItem("Moto");
             tipoMotoComboBox.setSelectedItem(((Moto) veiculo).getTipoMoto().name());
-        } else if (veiculo instanceof Caminhao) {
+            assentosField.setText("");
+            potenciaMotorField.setText("");
+            numEixosField.setText("");
+        } else {
             tipoVeiculoComboBox.setSelectedItem("Caminhão");
             numEixosField.setText(String.valueOf(((Caminhao) veiculo).getNumEixos()));
+            assentosField.setText("");
+            potenciaMotorField.setText("");
+            tipoMotoComboBox.setSelectedItem("NAKED");
         }
     }
 
@@ -230,23 +252,35 @@ public class VeiculoMonitorGUI extends JFrame {
         documentoProprietarioField.setText("");
         enderecoProprietarioField.setText("");
         telefoneProprietarioField.setText("");
+        tipoVeiculoComboBox.setSelectedIndex(0);
         assentosField.setText("");
         potenciaMotorField.setText("");
         numEixosField.setText("");
         tipoMotoComboBox.setSelectedIndex(0);
-        tipoVeiculoComboBox.setSelectedIndex(0);
-        selectedRow = -1;
+        selectedRow = -1; // Reseta a seleção
     }
 
     private void atualizarCamposVeiculo() {
-        String tipoVeiculo = (String) tipoVeiculoComboBox.getSelectedItem();
-        assentosField.setEnabled("Carro".equals(tipoVeiculo));
-        potenciaMotorField.setEnabled("Carro".equals(tipoVeiculo));
-        tipoMotoComboBox.setEnabled("Moto".equals(tipoVeiculo));
-        numEixosField.setEnabled("Caminhão".equals(tipoVeiculo));
+        String tipoSelecionado = (String) tipoVeiculoComboBox.getSelectedItem();
+        if ("Carro".equals(tipoSelecionado)) {
+            assentosField.setVisible(true);
+            potenciaMotorField.setVisible(true);
+            tipoMotoComboBox.setVisible(false);
+            numEixosField.setVisible(false);
+        } else if ("Moto".equals(tipoSelecionado)) {
+            assentosField.setVisible(false);
+            potenciaMotorField.setVisible(false);
+            tipoMotoComboBox.setVisible(true);
+            numEixosField.setVisible(false);
+        } else {
+            assentosField.setVisible(false);
+            potenciaMotorField.setVisible(false);
+            tipoMotoComboBox.setVisible(false);
+            numEixosField.setVisible(true);
+        }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(VeiculoMonitorGUI::new);
+        new VeiculoMonitorGUI();
     }
 }
