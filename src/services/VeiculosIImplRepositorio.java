@@ -11,11 +11,14 @@ public class VeiculosIImplRepositorio implements IVeiculosRepositorio {
 
     @Override
     public void adicionarVeiculo(Veiculo veiculo) {
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo não pode ser nulo");
+        }
         veiculos.add(veiculo);
     }
 
     @Override
     public List<Veiculo> listarVeiculos() {
-        return veiculos;
+        return new ArrayList<>(veiculos); // Retorna uma cópia da lista
     }
 }

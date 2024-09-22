@@ -15,6 +15,9 @@ public class VendasService implements IServicoVendas {
 
     @Override
     public void registrarVenda(Veiculo veiculo) {
+        if (veiculo == null) {
+            throw new IllegalArgumentException("Veículo não pode ser nulo");
+        }
         repositorio.adicionarVeiculo(veiculo);
     }
 

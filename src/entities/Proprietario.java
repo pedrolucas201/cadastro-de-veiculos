@@ -7,10 +7,10 @@ public class Proprietario {
     private String telefone;
 
     public Proprietario(String nome, String documento, String endereco, String telefone) {
-        this.nome = nome;
-        this.documento = documento;
-        this.endereco = endereco;
-        this.telefone = telefone;
+        setNome(nome);
+        setDocumento(documento);
+        setEndereco(endereco);
+        setTelefone(telefone);
     }
 
     // Getters e Setters
@@ -19,6 +19,9 @@ public class Proprietario {
     }
 
     public void setNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome não pode ser vazio");
+        }
         this.nome = nome;
     }
 
@@ -27,6 +30,9 @@ public class Proprietario {
     }
 
     public void setDocumento(String documento) {
+        if (documento == null || documento.trim().isEmpty()) {
+            throw new IllegalArgumentException("Documento não pode ser vazio");
+        }
         this.documento = documento;
     }
 
@@ -35,6 +41,9 @@ public class Proprietario {
     }
 
     public void setEndereco(String endereco) {
+        if (endereco == null || endereco.trim().isEmpty()) {
+            throw new IllegalArgumentException("Endereço não pode ser vazio");
+        }
         this.endereco = endereco;
     }
 
@@ -43,16 +52,18 @@ public class Proprietario {
     }
 
     public void setTelefone(String telefone) {
+        if (telefone == null || telefone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Telefone não pode ser vazio");
+        }
         this.telefone = telefone;
     }
 
     @Override
     public String toString() {
-        return "Proprietario{" +
-                "nome='" + nome + '\'' +
-                ", documento='" + documento + '\'' +
-                ", endereco='" + endereco + '\'' +
-                ", telefone='" + telefone + '\'' +
-                '}';
+        return "Proprietario: " +
+                "Nome: " + nome + '\n' +
+                " | Documento: " + documento + '\n' +
+                " | Endereco: " + endereco + '\n' +
+                " | Telefone: " + telefone + '\n';
     }
 }

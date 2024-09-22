@@ -5,8 +5,8 @@ public class Veiculo {
     private Proprietario proprietario;
 
     public Veiculo(String modelo, Proprietario proprietario) {
-        this.modelo = modelo;
-        this.proprietario = proprietario;
+        setModelo(modelo);
+        setProprietario(proprietario);
     }
 
     public String getModelo() {
@@ -14,6 +14,9 @@ public class Veiculo {
     }
 
     public void setModelo(String modelo) {
+        if (modelo == null || modelo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Modelo não pode ser vazio");
+        }
         this.modelo = modelo;
     }
 
@@ -22,6 +25,9 @@ public class Veiculo {
     }
 
     public void setProprietario(Proprietario proprietario) {
+        if (proprietario == null) {
+            throw new IllegalArgumentException("Proprietário não pode ser nulo");
+        }
         this.proprietario = proprietario;
     }
 

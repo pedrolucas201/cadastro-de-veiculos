@@ -5,7 +5,7 @@ public class Caminhao extends Veiculo {
 
     public Caminhao(String modelo, Proprietario proprietario, int numEixos) {
         super(modelo, proprietario);
-        this.numEixos = numEixos;
+        setNumEixos(numEixos);
     }
 
     public int getNumEixos() {
@@ -13,6 +13,9 @@ public class Caminhao extends Veiculo {
     }
 
     public void setNumEixos(int numEixos) {
+        if (numEixos <= 0) {
+            throw new IllegalArgumentException("Número de eixos deve ser maior que zero");
+        }
         this.numEixos = numEixos;
     }
 

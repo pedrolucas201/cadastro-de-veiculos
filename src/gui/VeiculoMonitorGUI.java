@@ -33,7 +33,7 @@ public class VeiculoMonitorGUI extends JFrame {
 
         // Painel de Entrada de Dados
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridLayout(9, 2));
+        inputPanel.setLayout(new GridLayout(10, 2));
 
         inputPanel.add(new JLabel("Modelo:"));
         modeloField = new JTextField();
@@ -79,28 +79,13 @@ public class VeiculoMonitorGUI extends JFrame {
 
         // Botões de ação
         JButton adicionarButton = new JButton("Adicionar Veículo");
-        adicionarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                adicionarVeiculo();
-            }
-        });
+        adicionarButton.addActionListener(e -> adicionarVeiculo());
 
         JButton atualizarButton = new JButton("Atualizar Veículo");
-        atualizarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                atualizarVeiculo();
-            }
-        });
+        atualizarButton.addActionListener(e -> atualizarVeiculo());
 
         JButton deletarButton = new JButton("Deletar Veículo");
-        deletarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                deletarVeiculo();
-            }
-        });
+        deletarButton.addActionListener(e -> deletarVeiculo());
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(adicionarButton);
@@ -119,6 +104,7 @@ public class VeiculoMonitorGUI extends JFrame {
         });
         JScrollPane scrollPane = new JScrollPane(veiculosTable);
 
+        // Adiciona os painéis ao layout
         add(inputPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
         add(scrollPane, BorderLayout.SOUTH);
@@ -261,6 +247,6 @@ public class VeiculoMonitorGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new VeiculoMonitorGUI();
+        SwingUtilities.invokeLater(VeiculoMonitorGUI::new);
     }
 }

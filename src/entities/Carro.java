@@ -6,8 +6,8 @@ public class Carro extends Veiculo {
 
     public Carro(String modelo, Proprietario proprietario, int assentos, double potenciaMotor) {
         super(modelo, proprietario);
-        this.assentos = assentos;
-        this.potenciaMotor = potenciaMotor;
+        setAssentos(assentos);
+        setPotenciaMotor(potenciaMotor);
     }
 
     public int getAssentos() {
@@ -15,6 +15,9 @@ public class Carro extends Veiculo {
     }
 
     public void setAssentos(int assentos) {
+        if (assentos <= 0) {
+            throw new IllegalArgumentException("Número de assentos deve ser maior que zero");
+        }
         this.assentos = assentos;
     }
 
@@ -23,6 +26,9 @@ public class Carro extends Veiculo {
     }
 
     public void setPotenciaMotor(double potenciaMotor) {
+        if (potenciaMotor <= 0) {
+            throw new IllegalArgumentException("Potência do motor deve ser maior que zero");
+        }
         this.potenciaMotor = potenciaMotor;
     }
 
